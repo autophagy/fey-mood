@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "fey-mood"
+version = "0.1.0"
+description = "An exercise in LLM directed crafts"
+authors = ["Mika Naylor <mail@autophagy.io>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "fey_mood"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.0.131"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
