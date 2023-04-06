@@ -1,8 +1,10 @@
 import random
 from dataclasses import dataclass, field
 
-from .creature import creatures
-from .names import names
+from colorama import Fore
+
+from .creature import create_random_creature
+from .names import create_random_name
 from .spheres import bases, friends
 
 
@@ -12,23 +14,15 @@ def make_spheres():
     return list(b.keys()) + f
 
 
-def make_name():
-    return random.choice(names)
-
-
 def make_gender():
     return random.choice(["male", "female", "genderless"])
 
 
-def make_creature():
-    return random.choice(creatures)
-
-
 @dataclass
 class Deity:
-    name: str = field(default_factory=make_name)
+    name: str = field(default_factory=create_random_name)
     gender: str = field(default_factory=make_gender)
-    creature: str = field(default_factory=make_creature)
+    creature: str = field(default_factory=create_random_creature)
     spheres: list[str] = field(default_factory=make_spheres)
 
     def __str__(self):
@@ -36,10 +30,11 @@ class Deity:
         last_sphere = self.spheres[-1]
 
         if len(self.spheres) > 1:
-            spheres_string = (
-                f"{', '.join([s.lower() for s in spheres])} and {last_sphere.lower()}"
-            )
+            spheres_string = f"{', '.join([Fore.GREEN + s.lower() + Fore.RESET for s in spheres])} and {Fore.GREEN + last_sphere.lower() + Fore.RESET}"
         else:
-            spheres_string = last_sphere.lower()
+            spheres_string = Fore.GREEN + last_sphere.lower() + Fore.RESET
 
-        return f"{self.name}. {self.name} most often takes the form of a {self.gender} {self.creature} and is associated with {spheres_string}"
+        name = Fore.RED + self.name + Fore.RESET
+        species = f"{Fore.CYAN}{self.gender} {self.creature}{Fore.RESET}"
+
+        return f"{name}. {name} most often takes the form of a {species} and is associated with {spheres_string}"

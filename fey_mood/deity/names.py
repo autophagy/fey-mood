@@ -1,3 +1,5 @@
+import random
+
 names = [
     "Aban",
     "Adil",
@@ -165,3 +167,10 @@ names = [
     "Ònul",
     "Ùshrir",
 ]
+
+
+def create_random_name():
+    name_parts = []
+    for _ in range(random.randint(1, 2)):
+        name_parts.append(random.choice(names))
+    return "-".join(name_parts)
