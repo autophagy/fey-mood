@@ -7,6 +7,12 @@
 A tool to simulate being divinely inspired by a deity from Dwarf Fortress,
 specifically to create a ceramic object. Uses OpenAI's `text-davinci-003` model.
 
+Details on naming, creatures and divine spheres taken from the Dwarf Fortress
+wiki:
+- [Names](https://dwarffortresswiki.org/index.php/Name)
+- [Creatures](https://dwarffortresswiki.org/index.php/Creature)
+- [Spheres](https://dwarffortresswiki.org/index.php/Sphere)
+
 ## How?
 
 ### With Nix
