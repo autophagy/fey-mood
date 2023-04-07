@@ -2,14 +2,14 @@
 
 ![](output.gif)
 
-# What?
+## What?
 
 A tool to simulate being divinely inspired by a deity from Dwarf Fortress,
 specifically to create a ceramic object. Uses OpenAI's `text-davinci-003` model.
 
-# How?
+## How?
 
-## With Nix
+### With Nix
 
 ```
 > nix build
@@ -17,7 +17,7 @@ specifically to create a ceramic object. Uses OpenAI's `text-davinci-003` model.
 > ./result/bin/fey_mood
 ```
 
-## With Poetry
+### With Poetry
 
 ```
 > poetry install
@@ -25,7 +25,7 @@ specifically to create a ceramic object. Uses OpenAI's `text-davinci-003` model.
 > poetry run fey_mood
 ```
 
-# Why?
+## Why?
 
 I wanted to explore ideas around automation, labour and creative control (or
 lack thereof) with regards to the generative AI models that are currently being
