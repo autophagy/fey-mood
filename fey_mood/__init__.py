@@ -11,7 +11,30 @@ from colorama import Fore
 from fey_mood.deity import Deity
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-width = shutil.get_terminal_size(fallback=(80, 24)).columns
+
+
+def frame(text):
+    horizontal = "═"
+    vertical = "║"
+
+    width = min(shutil.get_terminal_size(fallback=(80, 24)).columns, 80)
+    wrapped_text = textwrap.fill(text, width=width - 4, replace_whitespace=False)
+
+    blank = f"{vertical}{' '*(width-2)}{vertical}"
+
+    framed = [f"╔{horizontal * (width-2)}╗"]
+    framed.append(blank)
+    framed.append(
+        f"{vertical} {Fore.MAGENTA}You have been taken by a fey mood!{Fore.RESET}{' '*(width-38)} {vertical}"
+    )
+    framed.append(blank)
+
+    for line in wrapped_text.split("\n"):
+        line_length = len(line)
+        framed.append(f"{vertical} {line}{' '*((width-4)-line_length)} {vertical}")
+    framed.append(blank)
+    framed.append(f"╚{horizontal * (width-2)}╝")
+    return "\n".join(framed)
 
 
 async def generate_artifact_demand(deity):
@@ -26,11 +49,7 @@ async def generate_artifact_demand(deity):
         model="text-davinci-003", prompt=text, max_tokens=256, temperature=0.8
     )
 
-    return (
-        result["choices"][0]["text"]
-        .strip()
-        .replace(deity.name, f"{Fore.RED}{deity.name}{Fore.RESET}")
-    )
+    return result["choices"][0]["text"].strip()
 
 
 async def communing_animation(deity):
@@ -53,9 +72,10 @@ async def commune():
     demand = await generate_artifact_demand(deity)
     communing_task.cancel()
 
-    print(f"\n\n{'-'*width}\n")
-    print(f"{Fore.MAGENTA}You have been taken by a fey mood!{Fore.RESET}\n")
-    print(textwrap.fill(demand, width=width))
+    framed_text = frame(demand)
+    framed_text = framed_text.replace(deity.name, f"{Fore.RED}{deity.name}{Fore.RESET}")
+    print("\n\n")
+    print(framed_text)
 
 
 def main():
