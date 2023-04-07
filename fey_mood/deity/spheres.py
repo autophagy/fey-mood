@@ -779,11 +779,11 @@ def bases(num_bases=2):
     bases = []
 
     for _ in range(num_bases):
-        base = random.choice(items)
-        precluded = [b[1]["precluded"] for b in bases]
-        if base[0] not in precluded:
-            bases.append(base)
-    return {key: value for key, value in bases}
+        sphere_name, sphere = random.choice(items)
+        precluded = [item for _, sublist in bases for item in sublist["precluded"]]
+        if sphere_name not in precluded:
+            bases.append((sphere_name, sphere))
+    return dict(bases)
 
 
 def friends(bases, num_friends=1):
