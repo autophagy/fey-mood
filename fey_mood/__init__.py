@@ -4,6 +4,7 @@ import random
 import shutil
 import sys
 import textwrap
+import argparse
 
 import openai
 from colorama import Fore
@@ -37,7 +38,7 @@ def frame(text):
     return "\n".join(framed)
 
 
-async def generate_artifact_demand(deity):
+async def generate_artifact_demand(deity, model, max_tokens, temperature):
     text = f"""You are {deity.name}, a dwarven deity. You most often take the form of a {deity.gender} {deity.creature} and are associated with the following domains: {', '.join(deity.spheres)}.
     You are directing a dwarven potter to create a work to honour you. Output a detailed description of a ceramic object that the potter must build.
     It should be a practical item, not sculptural, and be able to be made on a throwing wheel, such as a cup, mug, plate, bowl, vase, etc.
@@ -46,7 +47,7 @@ async def generate_artifact_demand(deity):
     The description must begin with 'I am {deity.name}. Hear me. You must create a'."""
 
     result = await openai.Completion.acreate(
-        model="text-davinci-003", prompt=text, max_tokens=256, temperature=0.8
+        model=model, prompt=text, max_tokens=max_tokens, temperature=temperature
     )
 
     return result["choices"][0]["text"].strip()
@@ -64,12 +65,12 @@ async def communing_animation(deity):
             await asyncio.sleep(0.05)
 
 
-async def commune():
+async def commune(model, max_tokens, temperature):
     deity = Deity()
 
     communing_task = asyncio.create_task(communing_animation(deity))
 
-    demand = await generate_artifact_demand(deity)
+    demand = await generate_artifact_demand(deity, model, max_tokens, temperature)
     communing_task.cancel()
 
     framed_text = frame(demand)
@@ -79,7 +80,29 @@ async def commune():
 
 
 def main():
-    asyncio.run(commune())
+    parser = argparse.ArgumentParser(
+        description="Commune with a deity to recieve a demand."
+    )
+    parser.add_argument(
+        "--model",
+        default="text-davinci-003",
+        type=str,
+        help="Specify the OpenAI model name (default: text-davinci-003)",
+    )
+    parser.add_argument(
+        "--max_tokens",
+        default=256,
+        type=int,
+        help="Specify the maximum number of tokens (default: 256)",
+    )
+    parser.add_argument(
+        "--temperature",
+        default=0.8,
+        type=float,
+        help="Specify the temperature value (default: 0.8)",
+    )
+    args = parser.parse_args()
+    asyncio.run(commune(args.model, args.max_tokens, args.temperature))
 
 
 if __name__ == "__main__":
