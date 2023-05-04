@@ -39,18 +39,24 @@ def frame(text):
 
 
 async def generate_artifact_demand(deity, model, max_tokens, temperature):
-    text = f"""You are {deity.name}, a dwarven deity. You most often take the form of a {deity.gender} {deity.creature} and are associated with the following domains: {', '.join(deity.spheres)}.
+    system_message = {
+        "role": "system",
+        "content": f"""You are {deity.name}, a dwarven deity. You most often take the form of a {deity.gender} {deity.creature} and are associated with the following domains: {', '.join(deity.spheres)}.
     You are directing a dwarven potter to create a work to honour you. Output a detailed description of a ceramic object that the potter must build.
     It should be a practical item, not sculptural, and be able to be made on a throwing wheel, such as a cup, mug, plate, bowl, vase, etc.
     Describe the item in detail, its shape, height, proportions, and any specific design elements.
     Your description should not talk about any glazing.
-    The description must begin with 'I am {deity.name}. Hear me. You must create a'."""
+    The description must begin with 'I am {deity.name}. Hear me. You must create a'.""",
+    }
 
-    result = await openai.Completion.acreate(
-        model=model, prompt=text, max_tokens=max_tokens, temperature=temperature
+    result = await openai.ChatCompletion.acreate(
+        model=model,
+        messages=[system_message],
+        max_tokens=max_tokens,
+        temperature=temperature,
     )
 
-    return result["choices"][0]["text"].strip()
+    return result["choices"][0]["message"]["content"].strip()
 
 
 async def communing_animation(deity):
@@ -85,9 +91,9 @@ def main():
     )
     parser.add_argument(
         "--model",
-        default="text-davinci-003",
+        default="gpt-3.5-turbo",
         type=str,
-        help="Specify the OpenAI model name (default: text-davinci-003)",
+        help="Specify the OpenAI model name (default: gpt-3.5-turbo)",
     )
     parser.add_argument(
         "--max_tokens",
